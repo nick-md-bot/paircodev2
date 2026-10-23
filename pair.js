@@ -36,7 +36,7 @@ router.get('/', async (req, res) => {
              });
 
             if (!session.authState.creds.registered) {
-                await delay(1500);
+                await delay(3000);
                 num = num.replace(/[^0-9]/g, '');
                 const code = await session.requestPairingCode(num);
                 if (!res.headersSent) {
@@ -66,10 +66,10 @@ router.get('/', async (req, res) => {
                 }
             });
         } catch (err) {
-            console.log("service restated");
+            console.log("pair error:", err && (err.stack || err.message || err));
             await removeFile('./temp/' + id);
             if (!res.headersSent) {
-                await res.send({ code: "Service Unavailable" });
+                await res.send({ code: "Service Unavailable: " + (err && err.message) });
             }
         }
     }
